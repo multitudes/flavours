@@ -7,15 +7,19 @@
 
 import SwiftUI
 
-struct Flavor: Identifiable, Codable, Hashable {
-	var id: String = UUID().uuidString
-
+struct Flavor: Codable, Hashable, Equatable, Identifiable {
+	var id = UUID()
 	var name: String
 	var description: String = ""
 	var image: String = ""
+
 }
 
-struct Node<Flavor>: Identifiable {
+struct Node<Flavor> {
+	static func == (lhs: Node<Flavor>, rhs: Node<Flavor>) -> Bool {
+		lhs.id == rhs.id
+	}
+
 	var id = UUID()
 	var flavor: Flavor
 	private(set) var children: [Node]
@@ -34,6 +38,8 @@ struct Node<Flavor>: Identifiable {
 }
 extension Node: Equatable where Flavor: Equatable { }
 extension Node: Hashable where Flavor: Hashable { }
+//extension Node: Equatable where Flavor: Equatable { }
+//extension Node: Hashable where Flavor: Hashable { }
 
 
 class FlavorWheel: ObservableObject {
@@ -77,8 +83,8 @@ struct ContentView: View {
 	@State private var currentIndexLeaf = 0
 
 	private var middleFlavoursArray: [Node<Flavor>] {
-		print(currentIndexRoot)
-		print(flavorWheel.root.children)
+	//	print(currentIndexRoot)
+		//print(flavorWheel.root.children)
 		return flavorWheel.root.children[currentIndexRoot].children
 	}
 
@@ -115,29 +121,44 @@ struct ContentView: View {
 								VStack {
 									//Spacer()
 									Color(middleFlavoursArray[index].flavor.name)
+									//Text(index.description)
 								}
 								Text(middleFlavoursArray[index].flavor.name)
 									.padding()
 									.background(Color(.tertiarySystemBackground))
 									.clipShape(Capsule())
 									.padding(60)
-							}.tag(index)
+							}
+							.tag(index)
+							.id(currentIndexBranch)
 
 						}
-					}.tabViewStyle(PageTabViewStyle())
+					}
+					.tabViewStyle(PageTabViewStyle())
 					.clipShape(RoundedRectangle(cornerRadius: 25.0))
 
-
-					ForEach(leafArray) { leaf in
-						ZStack(alignment: .bottom) {
-								Color(leaf.flavor.name)
-							Text(leaf.flavor.name)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
+					TabView(selection: $currentIndexLeaf) {
+						ForEach(leafArray.indices) { index in
+							ZStack(alignment: .bottom) {
+								Color(leafArray[index].flavor.name)
+								Text(leafArray[index].flavor.name)
+									.padding()
+									.background(Color(.tertiarySystemBackground))
+									.clipShape(Capsule())
+									.padding(60)
+							}
+							.tag(index)
+							.id(currentIndexLeaf)
 						}
-					}.clipShape(RoundedRectangle(cornerRadius: 25.0))
+					}
+					.tabViewStyle(PageTabViewStyle())
+					.clipShape(RoundedRectangle(cornerRadius: 25.0))
+					.onAppear() {
+//	/					self.currentIndexBranch = 0
+						print(leafArray.debugDescription)
+					}
+
+
 
 				}.padding(.init(top: 0, leading: 18, bottom: 18, trailing: 18))
 				.navigationTitle(Text("The Flavor Wheel"))

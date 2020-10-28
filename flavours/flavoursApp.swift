@@ -11,7 +11,8 @@ import SwiftUI
 struct flavoursApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+			//testtab()
+			ContentView()
         }
     }
 }
