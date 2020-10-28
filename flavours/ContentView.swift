@@ -65,7 +65,7 @@ struct ContentView: View {
 
 
 
-    var body: some View {
+	var body: some View {
 		VStack {
 			TabView {
 				ForEach(wheel, id:\.self) { wheel in
@@ -85,7 +85,9 @@ struct ContentView: View {
 				}
 			}.tabViewStyle(PageTabViewStyle())
 			.clipShape(RoundedRectangle(cornerRadius: 25.0))
-		   .padding()
+			.padding()
+			
+
 			TabView {
 				ForEach(flavoursArray, id:\.self) { flavor in
 					GeometryReader { geo in
@@ -96,48 +98,46 @@ struct ContentView: View {
 							}
 							Text(flavor)
 								.padding()
+								.background(Color(.tertiarySystemBackground))
+								.clipShape(Capsule())
+								.padding(60)
+						}
+					}
+				}
+			}.tabViewStyle(PageTabViewStyle())
+			.clipShape(RoundedRectangle(cornerRadius: 25.0))
+			.padding()
 
+			TabView {
+				ForEach(leafArray, id: \.self) { flav in
+					GeometryReader { geo in
+						ZStack(alignment: .bottom) {
+							VStack {
+								//Spacer()
+								Color(flav)
+							}
+							Text(flav)
+								.padding()
 								.background(Color(.tertiarySystemBackground))
 								.clipShape(Capsule())
 								.padding(60)
 
 						}
 					}
+
 				}
-			}.tabViewStyle(PageTabViewStyle())
+			}
+			.tabViewStyle(PageTabViewStyle())
 			.clipShape(RoundedRectangle(cornerRadius: 25.0))
-		   .padding()
-			TabView {
-			  ForEach(leafArray, id: \.self) { flav in
-				  GeometryReader { geo in
-					  ZStack(alignment: .bottom) {
-						  VStack {
-							  //Spacer()
-							  Color(flav)
-						  }
-						  Text(flav)
-							  .padding()
-
-							  .background(Color(.tertiarySystemBackground))
-							  .clipShape(Capsule())
-							  .padding(60)
-
-					  }
-				  }
-
-			  }
-		  }
-		  .tabViewStyle(PageTabViewStyle())
-		  .clipShape(RoundedRectangle(cornerRadius: 25.0))
 			.padding()
 		}
 		//.edgesIgnoringSafeArea(.all)
 
-    }
+	}
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+	static var previews: some View {
+		ContentView()
+	}
 }
