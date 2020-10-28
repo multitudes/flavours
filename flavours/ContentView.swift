@@ -35,19 +35,20 @@ struct Node<Flavor> {
 
 
 class FlavorWheel: ObservableObject {
+	private(set) var root: Node<Flavor>
 	init() {
-		var root = Node(flavor: Flavor(name: "startNode"))
+		root = Node(flavor: Flavor(name: "startNode"))
 		var fruity = Node(flavor: Flavor(name: "Fruity"))
 		root.add(child: fruity)
 
 		var berry = Node(flavor: Flavor(name: "Berry"))
-		var driedFruit = Node(flavor: Flavor(name: "driedFruit"))
+		let driedFruit = Node(flavor: Flavor(name: "driedFruit"))
 		fruity.add(child: berry)
 		fruity.add(child: driedFruit)
-		var blackberry = Node(flavor: Flavor(name: "Blackberry"))
-		var raspberry = Node(flavor: Flavor(name: "Raspberry"))
-		var blueberry = Node(flavor: Flavor(name: "Blueberry"))
-		var strawberry = Node(flavor: Flavor(name: "Strawberry"))
+		let blackberry = Node(flavor: Flavor(name: "Blackberry"))
+		let raspberry = Node(flavor: Flavor(name: "Raspberry"))
+		let blueberry = Node(flavor: Flavor(name: "Blueberry"))
+		let strawberry = Node(flavor: Flavor(name: "Strawberry"))
 		berry.add(child: blackberry)
 		berry.add(child: raspberry)
 		berry.add(child: blueberry)
