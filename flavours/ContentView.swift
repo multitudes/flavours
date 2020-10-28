@@ -7,15 +7,16 @@
 
 import SwiftUI
 
-struct Flavor: Identifiable, Codable {
-	var id: UUID = UUID()
+struct Flavor: Identifiable, Codable, Hashable {
+	var id: String = UUID().uuidString
 
 	var name: String
 	var description: String = ""
 	var image: String = ""
 }
 
-struct Node<Flavor> {
+struct Node<Flavor>: Identifiable {
+	var id = UUID()
 	var flavor: Flavor
 	private(set) var children: [Node]
 
@@ -31,10 +32,11 @@ struct Node<Flavor> {
 		children.append(child)
 	}
 }
+extension Node: Equatable where Flavor: Equatable { }
+extension Node: Hashable where Flavor: Hashable { }
 
 
-
-class FlavorWheel: ObservableObject {
+struct FlavorWheel {
 	private(set) var root: Node<Flavor>
 	init() {
 		root = Node(flavor: Flavor(name: "startNode"))
@@ -59,79 +61,86 @@ class FlavorWheel: ObservableObject {
 }
 
 struct ContentView: View {
-	private var wheel: [String] = ["Fruity"]
+	 var flavorWheel: FlavorWheel = FlavorWheel()
+
+
+	private var wheel: [Node<Flavor>] {
+		flavorWheel.root.children
+	}
+		//= ["Fruity"]
 	private var flavoursArray: [String] = ["Berry","Dried Fruit"]
 	private var leafArray: [String] = ["Blackberry","Raspberry","Blueberry","Strawberry","Raisin", "Prune"]
 
-
-
-
 	var body: some View {
-		VStack {
-			TabView {
-				ForEach(wheel, id:\.self) { wheel in
-					GeometryReader { geo in
-						ZStack(alignment: .bottom) {
-							VStack {
-								//Spacer()
-								Color(wheel)
-							}
-							Text(wheel)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
-						}
-					}
-				}
-			}.tabViewStyle(PageTabViewStyle())
-			.clipShape(RoundedRectangle(cornerRadius: 25.0))
-			.padding()
-			
+		NavigationView {
+		  VStack {
+			  TabView {
+				ForEach(wheel) { flav in
+					  GeometryReader { geo in
+						  ZStack(alignment: .bottom) {
+							  VStack {
+								  //Spacer()
+								Color(flav.flavor.name)
+							  }
+							Text(flav.flavor.name)
+								  .padding()
+								  .background(Color(.tertiarySystemBackground))
+								  .clipShape(Capsule())
+								  .padding(60)
+						  }
+					  }
+				  }
+			  }.tabViewStyle(PageTabViewStyle())
+			  .clipShape(RoundedRectangle(cornerRadius: 25.0))
+			  .padding()
 
-			TabView {
-				ForEach(flavoursArray, id:\.self) { flavor in
-					GeometryReader { geo in
-						ZStack(alignment: .bottom) {
-							VStack {
-								//Spacer()
-								Color(flavor)
-							}
-							Text(flavor)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
-						}
-					}
-				}
-			}.tabViewStyle(PageTabViewStyle())
-			.clipShape(RoundedRectangle(cornerRadius: 25.0))
-			.padding()
 
-			TabView {
-				ForEach(leafArray, id: \.self) { flav in
-					GeometryReader { geo in
-						ZStack(alignment: .bottom) {
-							VStack {
-								//Spacer()
-								Color(flav)
-							}
-							Text(flav)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
+			  TabView {
+				  ForEach(flavoursArray, id:\.self) { flavor in
+					  GeometryReader { geo in
+						  ZStack(alignment: .bottom) {
+							  VStack {
+								  //Spacer()
+								  Color(flavor)
+							  }
+							  Text(flavor)
+								  .padding()
+								  .background(Color(.tertiarySystemBackground))
+								  .clipShape(Capsule())
+								  .padding(60)
+						  }
+					  }
+				  }
+			  }.tabViewStyle(PageTabViewStyle())
+			  .clipShape(RoundedRectangle(cornerRadius: 25.0))
+			  .padding()
 
-						}
-					}
+			  TabView {
+				  ForEach(leafArray, id: \.self) { flav in
+					  GeometryReader { geo in
+						  ZStack(alignment: .bottom) {
+							  VStack {
+								  //Spacer()
+								  Color(flav)
+							  }
+							  Text(flav)
+								  .padding()
+								  .background(Color(.tertiarySystemBackground))
+								  .clipShape(Capsule())
+								  .padding(60)
 
-				}
-			}
-			.tabViewStyle(PageTabViewStyle())
-			.clipShape(RoundedRectangle(cornerRadius: 25.0))
-			.padding()
+						  }
+					  }
+
+				  }
+			  }
+			  .tabViewStyle(PageTabViewStyle())
+			  .clipShape(RoundedRectangle(cornerRadius: 25.0))
+			  .padding()
+		  }
+		.navigationTitle(Text("The Flavor Wheel"))
 		}
+
 		//.edgesIgnoringSafeArea(.all)
 
 	}
