@@ -1,6 +1,6 @@
 # flavourWheel
  A Flavour Wheel App for Coffee tasting. Playing around with colors and data organized in a scrollable and beautiful way, all with SwiftUI.  
- The main challenge is to make fit the below on the screen on an iPhone :)
+ The main challenge is to make fit the below on the screen of an iPhone :)
  
 <br>
 <p align="center">
