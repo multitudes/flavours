@@ -36,12 +36,11 @@ extension Node: Equatable where Flavor: Equatable { }
 extension Node: Hashable where Flavor: Hashable { }
 
 
-struct FlavorWheel {
+class FlavorWheel: ObservableObject {
 	private(set) var root: Node<Flavor>
 	init() {
 		root = Node(flavor: Flavor(name: "startNode"))
 		var fruity = Node(flavor: Flavor(name: "Fruity"))
-
 
 		var berry = Node(flavor: Flavor(name: "Berry"))
 		var driedFruit = Node(flavor: Flavor(name: "Dried Fruit"))
@@ -61,22 +60,22 @@ struct FlavorWheel {
 		fruity.add(child: berry)
 		fruity.add(child: driedFruit)
 		root.add(child: fruity)
+	}
+	var wheel: [Node<Flavor>] {
+		self.root.children
+	}
 
-
-
+	func update() {
+		objectWillChange.send()
 	}
 }
 
 struct ContentView: View {
-	var flavorWheel: FlavorWheel = FlavorWheel()
+	@ObservedObject var flavorWheel: FlavorWheel = FlavorWheel()
 	@State private var currentIndexRoot = 0
-	@State private var currentIndexBranch = 0
+	@State private var currentIndexBranch = 1
 	@State private var currentIndexLeaf = 0
 
-	private var wheel: [Node<Flavor>] {
-		flavorWheel.root.children
-	}
-	//= ["Fruity"]
 	private var middleFlavoursArray: [Node<Flavor>] {
 		print(currentIndexRoot)
 		print(flavorWheel.root.children)
@@ -84,72 +83,65 @@ struct ContentView: View {
 	}
 
 	//private var middleFlavoursArray: [String] = ["Berry","Dried Fruit"]
-	private var leafArray: [String] = ["Blackberry","Raspberry","Blueberry","Strawberry","Raisin", "Prune"]
+	private var leafArray: [Node<Flavor>] {
+		return flavorWheel.root.children[currentIndexRoot].children[currentIndexBranch].children
+	}
+	//["Blackberry","Raspberry","Blueberry","Strawberry","Raisin", "Prune"]
 
 	var body: some View {
 		NavigationView {
-			VStack {
-				TabView(selection: $currentIndexRoot)  {
-					ForEach(wheel.indices) { index in
-						ZStack(alignment: .bottom) {
-							VStack {
-								//Spacer()
-								Color(wheel[index].flavor.name)
-							}
-							Text(wheel[index].flavor.name)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
-						}.tag(index)
-					}
-				}.tabViewStyle(PageTabViewStyle())
-				.clipShape(RoundedRectangle(cornerRadius: 25.0))
-
-				TabView(selection: $currentIndexBranch) {
-					ForEach(middleFlavoursArray.indices) { index in
-						ZStack(alignment: .bottom) {
-							VStack {
-								//Spacer()
-								Color(middleFlavoursArray[index].flavor.name)
-							}
-							Text(middleFlavoursArray[index].flavor.name)
-								.padding()
-								.background(Color(.tertiarySystemBackground))
-								.clipShape(Capsule())
-								.padding(60)
-						}.tag(index)
-
-					}
-				}.tabViewStyle(PageTabViewStyle())
-				.clipShape(RoundedRectangle(cornerRadius: 25.0))
-
-
-
-				TabView {
-					ForEach(leafArray, id: \.self) { flav in
-						GeometryReader { geo in
+			ScrollView {
+				VStack {
+					TabView(selection: $currentIndexRoot)  {
+						ForEach(flavorWheel.wheel.indices) { index in
 							ZStack(alignment: .bottom) {
 								VStack {
 									//Spacer()
-									Color(flav)
+									Color(flavorWheel.wheel[index].flavor.name)
 								}
-								Text(flav)
+								Text(flavorWheel.wheel[index].flavor.name)
 									.padding()
 									.background(Color(.tertiarySystemBackground))
 									.clipShape(Capsule())
 									.padding(60)
-
-							}
+							}.tag(index)
 						}
+					}.tabViewStyle(PageTabViewStyle())
+					.clipShape(RoundedRectangle(cornerRadius: 25.0))
 
-					}
-				}
-				.tabViewStyle(PageTabViewStyle())
-				.clipShape(RoundedRectangle(cornerRadius: 25.0))
+					TabView(selection: $currentIndexBranch) {
+						ForEach(middleFlavoursArray.indices) { index in
+							ZStack(alignment: .bottom) {
+								VStack {
+									//Spacer()
+									Color(middleFlavoursArray[index].flavor.name)
+								}
+								Text(middleFlavoursArray[index].flavor.name)
+									.padding()
+									.background(Color(.tertiarySystemBackground))
+									.clipShape(Capsule())
+									.padding(60)
+							}.tag(index)
 
-			}.padding(.init(top: 0, leading: 18, bottom: 18, trailing: 18))
-			.navigationTitle(Text("The Flavor Wheel"))
+						}
+					}.tabViewStyle(PageTabViewStyle())
+					.clipShape(RoundedRectangle(cornerRadius: 25.0))
+
+
+					ForEach(leafArray) { leaf in
+						ZStack(alignment: .bottom) {
+								Color(leaf.flavor.name)
+							Text(leaf.flavor.name)
+								.padding()
+								.background(Color(.tertiarySystemBackground))
+								.clipShape(Capsule())
+								.padding(60)
+						}
+					}.clipShape(RoundedRectangle(cornerRadius: 25.0))
+
+				}.padding(.init(top: 0, leading: 18, bottom: 18, trailing: 18))
+				.navigationTitle(Text("The Flavor Wheel"))
+			}
 		}
 
 		//.edgesIgnoringSafeArea(.all)
