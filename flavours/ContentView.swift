@@ -13,6 +13,13 @@ struct Flavor: Codable, Hashable, Equatable, Identifiable {
 	var description: String = ""
 	var image: String = ""
 
+
+}
+extension Flavor {
+	init(name: String, description: String) {
+		self.name = name
+		self.description = description
+	}
 }
 
 struct Node<Flavor> {
@@ -28,6 +35,7 @@ struct Node<Flavor> {
 		self.flavor = flavor
 		children = []
 	}
+
 	init(flavor: Flavor, children: [Node]) {
 		self.flavor = flavor
 		self.children = children
@@ -51,9 +59,11 @@ class FlavorWheel: ObservableObject {
 		var berry = Node(flavor: Flavor(name: "Berry"))
 		var driedFruit = Node(flavor: Flavor(name: "Dried Fruit"))
 
-		var blackberry = Node(flavor: Flavor(name: "Blackberry"))
-		var raspberry = Node(flavor: Flavor(name: "Raspberry"))
-		var blueberry = Node(flavor: Flavor(name: "Blueberry"))
+		var blackberry = Node(flavor: Flavor(name: "Blackberry",
+											 description: "The sweet, dark, fruity, floral, slightly sour, somewhat woody aromatic associated with blackberries."))
+		var raspberry = Node(flavor: Flavor(name: "Raspberry",description: "The slightly dark, fruity, sweet, slightly sour, musty, dusty, floral aromatic associated with raspberry."))
+		var blueberry = Node(flavor: Flavor(name: "Blueberry",
+											description: "The slightly dark, fruity, sweet, slightly sour, musty, dusty, floral aromatic associated with blueberry."))
 		var strawberry = Node(flavor: Flavor(name: "Strawberry"))
 		var raisin = Node(flavor: Flavor(name: "Raisin"))
 		var prune = Node(flavor: Flavor(name: "Prune"))
@@ -79,8 +89,10 @@ class FlavorWheel: ObservableObject {
 struct ContentView: View {
 	@ObservedObject var flavorWheel: FlavorWheel = FlavorWheel()
 	@State private var currentIndexRoot = 0
-	@State private var currentIndexBranch = 1
+	@State private var currentIndexBranch = 0
 	@State private var currentIndexLeaf = 0
+
+	@State private var showDescription = false
 
 	private var middleFlavoursArray: [Node<Flavor>] {
 	//	print(currentIndexRoot)
@@ -95,9 +107,13 @@ struct ContentView: View {
 	//["Blackberry","Raspberry","Blueberry","Strawberry","Raisin", "Prune"]
 
 	var body: some View {
-		NavigationView {
-			ScrollView {
+
+		//NavigationView {
+			//ScrollView {
+
 				VStack {
+					Spacer()
+					Text("Coffee Flavor Wheel").font(.largeTitle).minimumScaleFactor(0.5)
 					TabView(selection: $currentIndexRoot)  {
 						ForEach(flavorWheel.wheel.indices) { index in
 							ZStack(alignment: .bottom) {
@@ -128,12 +144,10 @@ struct ContentView: View {
 									.background(Color(.tertiarySystemBackground))
 									.clipShape(Capsule())
 									.padding(60)
-							}
-							.tag(index)
-							.id(currentIndexBranch)
-
+							}.tag(index)
 						}
 					}
+					.id(Int.random(in: 0..<Int.max))
 					.tabViewStyle(PageTabViewStyle())
 					.clipShape(RoundedRectangle(cornerRadius: 25.0))
 
@@ -148,24 +162,46 @@ struct ContentView: View {
 									.padding(60)
 							}
 							.tag(index)
-							.id(currentIndexLeaf)
+							.onTapGesture {
+								showDescription = true
+							}
+							.sheet(isPresented: $showDescription) {
+								ZStack(alignment: .center) {
+									Color(leafArray[index].flavor.name)
+									VStack {
+										Text(leafArray[index].flavor.name)
+											.font(.largeTitle)
+											.padding()
+											.background(Color(.tertiarySystemBackground))
+											.clipShape(Capsule())
+											.padding(60)
+										Text(leafArray[index].flavor.description)
+											.foregroundColor(.white)
+											.font(.body)
+											.padding(60)
+										if leafArray[index].flavor.name == "Blueberry" {
+											Image("blueberry").resizable().frame(maxWidth: .infinity, alignment: .center)
+											//Text("🫐").font(.largeTitle)
+										} else { EmptyView()}
+
+									}
+								}.ignoresSafeArea(edges: .bottom)
+							}
 						}
 					}
+					.id(Int.random(in: 0..<Int.max))
 					.tabViewStyle(PageTabViewStyle())
 					.clipShape(RoundedRectangle(cornerRadius: 25.0))
-					.onAppear() {
-//	/					self.currentIndexBranch = 0
-						print(leafArray.debugDescription)
-					}
-
-
-
+//					.onAppear() {
+//						print(leafArray.debugDescription)
+//					}
 				}.padding(.init(top: 0, leading: 18, bottom: 18, trailing: 18))
-				.navigationTitle(Text("The Flavor Wheel"))
-			}
-		}
 
-		//.edgesIgnoringSafeArea(.all)
+				//.navigationTitle(Text("The Flavor Wheel"))
+			//}
+		//}
+
+		//.edgesIgnoringSafeArea(.bottom)
 
 	}
 }

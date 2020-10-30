@@ -7,28 +7,35 @@
 
 import SwiftUI
 
-
-struct testtab: View {
-	@State var numberOfPages: Int = 0
-
-		var body: some View {
-			VStack {
-				Text("Tap Me").onTapGesture(count: 1, perform: {
-					self.numberOfPages = [2,5,10,15].randomElement()!
-				})
-				if self.numberOfPages != 0 {
-					TabView {
-						ForEach(0..<numberOfPages, id: \.self) { index in
-							Text("\(index)").frame(width: 300).background(Color.red)
-						}
-					}
-					.tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-					.frame(height: 300)
-					.id(numberOfPages)
-					
-				}
-			}.background(Color.blue)
+struct CircleView:View {
+	@State var label:String
+	var body:some View {
+		ZStack{
+			Circle()
+				.fill(Color.yellow)
+				.frame(width: 70, height: 70)
+			Text(label)
 		}
+	}
+}
+struct testtab: View {
+	var body: some View {
+
+		VStack{
+			Divider()
+			ScrollView(.horizontal){
+				HStack{
+					ForEach(0..<10){
+						index in
+						CircleView(label: "\(index)")
+					}
+				}.padding()
+			}.frame(height:100)
+			Divider()
+			Spacer()
+		}
+
+	}
 }
 struct testtab_Previews: PreviewProvider {
     static var previews: some View {

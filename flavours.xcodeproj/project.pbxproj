@@ -14,6 +14,7 @@
 		454228D82545D53C003CE223 /* Color+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454228D72545D53C003CE223 /* Color+Ext.swift */; };
 		454228DD2545D6A3003CE223 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 454228DC2545D6A3003CE223 /* Colors.xcassets */; };
 		45F550E02549CAAF005A9F6A /* testtab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F550DF2549CAAF005A9F6A /* testtab.swift */; };
+		45F550E72549F103005A9F6A /* NewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F550E62549F103005A9F6A /* NewTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		454228D72545D53C003CE223 /* Color+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Ext.swift"; sourceTree = "<group>"; };
 		454228DC2545D6A3003CE223 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		45F550DF2549CAAF005A9F6A /* testtab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testtab.swift; sourceTree = "<group>"; };
+		45F550E62549F103005A9F6A /* NewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				454228C72545D0D2003CE223 /* flavoursApp.swift */,
 				454228C92545D0D2003CE223 /* ContentView.swift */,
 				45F550DF2549CAAF005A9F6A /* testtab.swift */,
+				45F550E62549F103005A9F6A /* NewTest.swift */,
 				454228DA2545D557003CE223 /* Extensions */,
 				454228CB2545D0D3003CE223 /* Assets.xcassets */,
 				454228DC2545D6A3003CE223 /* Colors.xcassets */,
@@ -160,6 +163,7 @@
 				454228C82545D0D2003CE223 /* flavoursApp.swift in Sources */,
 				454228D82545D53C003CE223 /* Color+Ext.swift in Sources */,
 				45F550E02549CAAF005A9F6A /* testtab.swift in Sources */,
+				45F550E72549F103005A9F6A /* NewTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
